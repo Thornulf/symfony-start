@@ -4,16 +4,16 @@
 namespace App\Controller;
 
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/test")
  * Class HomeController
  * @package App\Controller
  */
-class HomeController
+class HomeController extends AbstractController
 {
 
     /**
@@ -24,7 +24,12 @@ class HomeController
      */
     public function indexAction(Request $request, $name) {
         $age = $request->get("age") ?? 10;
-        return new Response("hello Symfony $name vous avez $age ans");
+
+        $fruits = [
+            "pommes", "poires", "oranges", "grenades"
+        ];
+
+        return $this->render("home/home.html.twig", ["name"=>$name, "age"=>$age, "fruitList"=>$fruits]);
     }
 
     /**
@@ -35,6 +40,6 @@ class HomeController
      */
     public function addAction($number1, $number2) {
         $result = $number1 + $number2;
-        return new Response("la somme de $number1 et $number2 fait $result");
+        return $this->render("home/add.html.twig", ["n1"=>$number1,"n2"=>$number2, "result"=>$result]);
     }
 }
