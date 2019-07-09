@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Service\ByeService;
 use App\Service\GreetingService;
+use App\Service\MessagerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,12 +16,20 @@ class BraveKangarooController extends AbstractController
     private $greeting;
 
     /**
+     * @var MessagerService
+     */
+    private $messagerService;
+
+
+    /**
      * BraveKangarooController constructor.
      * @param GreetingService $greeting
+     * @param MessagerService $messagerService
      */
-    public function __construct(GreetingService $greeting)
+    public function __construct(GreetingService $greeting, MessagerService $messagerService)
     {
         $this->greeting = $greeting;
+        $this->messagerService = $messagerService;
     }
 
     /**
@@ -27,6 +37,7 @@ class BraveKangarooController extends AbstractController
      */
     public function index()
     {
+        $this->messagerService->send();
         return $this->render('brave_kangaroo/index.html.twig', [
             'controller_name' => 'BraveKangarooController',
             'message' => $this->greeting->greet("Sam")

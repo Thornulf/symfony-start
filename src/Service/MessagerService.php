@@ -6,7 +6,7 @@ namespace App\Service;
 
 use Psr\Log\LoggerInterface;
 
-class GreetingService
+class MessagerService
 {
     /**
      * @var LoggerInterface
@@ -19,20 +19,19 @@ class GreetingService
     private $from;
 
     /**
-     * GreetingService constructor.
+     * MessagerService constructor.
      * @param LoggerInterface $logger
-     * @param $from
+     * @param string $from
      */
-    public function __construct(LoggerInterface $logger, $from)
+    public function __construct(LoggerInterface $logger, string $from)
     {
         $this->logger = $logger;
         $this->from = $from;
     }
 
-
-    public function greet($name) {
-        $this->logger->info("$name greeted by {$this->from}");
-        return "hello $name from {$this->from}";
+    public function send() {
+        $this->logger->info("message send from {$this->from}");
     }
+
 
 }
