@@ -53,7 +53,7 @@ class AuthorController extends AbstractController
         $author->setName("Tolkien")
                 ->setFirstName("John Ronald Reuel")
                 ->setGender("M")
-                ->setBirthDate(new \DateTime("now -126 years"));
+                ->setBirthDate(new \DateTime("03/01/1892"));
 
         $entityManager = $this->em;
         $entityManager->persist($author);

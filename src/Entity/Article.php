@@ -37,6 +37,12 @@ class Article
      */
     private $content;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Author", inversedBy="articles", cascade={"persist"})
+     * @var Author
+     */
+    private $author;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,19 +85,39 @@ class Article
     }
 
     /**
-     * @return mixed
+     * @return \DateTimeInterface
      */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): \DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param mixed $updatedAt
+     * @param \DateTimeInterface $updatedAt
+     * @return Article
      */
-    public function setUpdatedAt($updatedAt): void
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): Article
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * @return Author
+     */
+    public function getAuthor(): Author
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param Author $author
+     * @return Article
+     */
+    public function setAuthor(Author $author): Article
+    {
+        $this->author = $author;
+        return $this;
     }
 
 }

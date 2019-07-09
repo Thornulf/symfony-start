@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use Doctrine\ORM\EntityManager;
+use App\Entity\Author;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -50,10 +49,18 @@ class ArticleController extends AbstractController
     public function newArticleAction()
     {
         $article = new Article();
-        $article->setTitle('Symfony 5 arrive')
-            ->setContent("et il va faire mal")
-            ->setCreatedAt(new \DateTime("now -15 minutes"))
-            ->setUpdatedAt(new \DateTime("now"));
+
+        $author = new Author();
+        $author->setName("Hemingway")
+                ->setFirstName("Ernest")
+                ->setGender("M")
+                ->setBirthDate(new \DateTime("now +15 days -100years"));
+
+        $article->setTitle('Pour qui sonne le glas')
+                ->setContent("et il va faire mal")
+                ->setCreatedAt(new \DateTime("now -15 minutes"))
+                ->setUpdatedAt(new \DateTime("now"))
+                ->setAuthor($author);
 
         /* Avec Injection de dépendance */
 
