@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Article;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AuthorRepository")
@@ -19,6 +20,10 @@ class Author
     private $id;
 
     /**
+     * @Assert\NotBlank(message="L'auteur doit avoir un nom")
+     * @Assert\Length(min=2, max=30,
+     *      minMessage="Le nom est trop court {{ value }} fait moin de {{ limit }} caractères",
+     *      maxMessage="Le nom est trop long {{ value }} fait plus de {{ limit }} caractères")
      * @ORM\Column(type="string", length=80)
      */
     private $name;

@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Author;
+use App\Form\ArticleFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -46,38 +48,24 @@ class ArticleController extends AbstractController
     /**
      * @Route("/new")
      */
-    public function newArticleAction()
+    public function newArticleAction(Request $request)
     {
-        $article = new Article();
+        $form = $this->createForm(ArticleFormType::class);
 
-        $author = new Author();
-        $author->setName("Hemingway")
-                ->setFirstName("Ernest")
-                ->setGender("M")
-                ->setBirthDate(new \DateTime("now +15 days -100years"));
+        $form->handleRequest($request);
 
-        $article->setTitle('Pour qui sonne le glas')
-                ->setContent("et il va faire mal")
-                ->setCreatedAt(new \DateTime("now -15 minutes"))
-                ->setUpdatedAt(new \DateTime("now"))
-                ->setAuthor($author);
+        if($form->isSubmitted() && $form->isValid()){
+            $article = $form->getData();
+            $this->em->persist($article);
+            $this->em->flush();
+            return $this->redirectToRoute("article");
+        }
 
-        /* Avec Injection de dépendance */
+        dump($form->getData());
 
-        $entityManager = $this->em;
-        $entityManager->persist($article);
-        $entityManager->flush();
-
-        return $this->redirectToRoute("article");
-
-        /* Sans Injection de dépendance */
-
-//        $entityManager = $this->getDoctrine()->getManager();
-//        $entityManager->persist($article);
-//        $entityManager->flush();
-//
-//        return $this->render("article/new.html.twig", ["article"=>$article]);
-
+        return $this->render("/article/form.html.twig", [
+            "articleForm" => $form->createView()
+        ]);
     }
 
     /**
