@@ -105,4 +105,17 @@ class Author
         return $this->articles;
     }
 
+    public function getFullName() :string
+    {
+        $fullName = $this->gender == "f" ? "Mme.":"M.";
+
+        if(!empty($this->firstName)) {
+            $fullName .=" ". $this->firstName;
+        }
+
+        $fullName .=" ". $this->name;
+
+        return $fullName;
+    }
+
 }

@@ -9,29 +9,40 @@
 </style>
 
 <div class="example-wrapper">
-    {{ dump(authorList) }}
+
+    <h1>Liste des auteurs</h1>
+
+    <div>
+        <a href="{{ path('author_new') }}">
+            Nouvel auteur
+        </a>
+    </div>
 
     <table class="table table-bordered table-hover">
         <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Genre</th>
-            <th>Date de Naissance</th>
-        </tr>
+            <tr>
+                <th>Nom Complet</th>
+                <th>Genre</th>
+                <th>Date de Naissance</th>
+                <th></th>
+            </tr>
         </thead>
 
         <tbody>
         {% for author in authorList %}
             <tr>
-                <td>
-                    <a href="{{ path('author_show', {'id': author.id}) }}">
-                        {{ author.name }}
-                    </a>
-                </td>
-                <td>{{ author.firstName }}</td>
+                <td>{{ author.fullName }}</td>
                 <td>{{ author.gender }}</td>
                 <td>{{ author.birthDate| date("d/m/Y") }}</td>
+                <td>
+                    <a href="{{ path('author_edit', {'id': author.id}) }}">
+                        Modifier
+                    </a>
+                    &nbsp;|&nbsp;
+                    <a href="{{ path('author_delete', {'id': author.id}) }}">
+                        Supprimer
+                    </a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
