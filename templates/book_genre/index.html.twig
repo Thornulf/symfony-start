@@ -1,46 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BookGenreController!{% endblock %}
+{% block title %}BookGenre index{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>BookGenre index</h1>
 
-<div class="example-wrapper">
-    <h1>Liste des genre de livre</h1>
-
-    <div>
-        <a href="{{ path('genre_new') }}">
-            Nouveau genre
-        </a>
-    </div>
-
-    <table class="table table-bordered table-hover">
+    <table class="table">
         <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% for genre in bookGenreList %}
             <tr>
-                <td>{{ genre.name }}</td>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for book_genre in book_genres %}
+            <tr>
+                <td>{{ book_genre.id }}</td>
+                <td>{{ book_genre.name }}</td>
                 <td>
-                    <a href="{{ path('genre_edit', {'id': genre.id}) }}">
-                        Modifier
-                    </a>
-                    &nbsp;|&nbsp;
-                    <a href="{{ path('genre_delete', {'id': genre.id}) }}">
-                        Supprimer
-                    </a>
+                    <a href="{{ path('book_genre_show', {'id': book_genre.id}) }}">show</a>
+                    <a href="{{ path('book_genre_edit', {'id': book_genre.id}) }}">edit</a>
                 </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-</div>
+
+    <a href="{{ path('book_genre_new') }}">Create new</a>
 {% endblock %}

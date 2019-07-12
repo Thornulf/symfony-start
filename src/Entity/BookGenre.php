@@ -17,7 +17,7 @@ class BookGenre
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=80)
      */
     private $name;
 

@@ -39,7 +39,7 @@
                         Modifier
                     </a>
                     &nbsp;|&nbsp;
-                    <a href="{{ path('author_delete', {'id': author.id}) }}" >
+                    <a href="{{ path('author_delete', {'id': author.id}) }}" class="delete">
                         Supprimer
                     </a>
                 </td>
@@ -48,4 +48,18 @@
         </tbody>
     </table>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+
+        $(document).ready(function() {
+            $(".delete").click(function () {
+                return confirm("êtes vous sur de vouloir supprimer cet auteur ?");
+            });
+        });
+
+    </script>
 {% endblock %}

@@ -3,95 +3,94 @@
 namespace App\Controller;
 
 use App\Entity\BookGenre;
-use App\Form\BookGenreFormType;
+use App\Form\BookGenreType;
 use App\Repository\BookGenreRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/book")
- * Class BookGenreController
- * @package App\Controller
+ * @Route("/book/genre")
  */
 class BookGenreController extends AbstractController
 {
     /**
-     * @var EntityManagerInterface
+     * @Route("/", name="book_genre_index", methods={"GET"})
      */
-    private $em;
-
-    /**
-     * BookGenreController constructor.
-     * @param EntityManagerInterface $em
-     */
-    public function __construct(EntityManagerInterface $em)
+    public function index(BookGenreRepository $bookGenreRepository): Response
     {
-        $this->em = $em;
-    }
-
-    /**
-     * @Route("/genre/list", name="book_genre")
-     */
-    public function index()
-    {
-        $repo = $this->em->getRepository(BookGenre::class);
-        $bookGenreList = $repo->findAll();
-
         return $this->render('book_genre/index.html.twig', [
-            'controller_name' => 'BookGenreController',
-            'bookGenreList' => $bookGenreList
+            'book_genres' => $bookGenreRepository->findAll(),
         ]);
     }
 
     /**
-     * @Route("/new", name="genre_new")
-     * @Route("/edit/{id}", name="genre_edit")
-     * @param Request $request
-     * @param BookGenreRepository $repository
-     * @param null $id
-     * @return Response
+     * @Route("/new", name="book_genre_new", methods={"GET","POST"})
      */
-    public function formBookGenreAction(Request $request, BookGenreRepository $repository, $id=null) {
-        if($id) {
-            $buttonLabel = "Modifier";
-            $bookGenre = $repository->findOneById($id);
-        } else {
-            $buttonLabel = "Ajouter";
-            $bookGenre = new BookGenre();
-        }
-
-        $form = $this->createForm(BookGenreFormType::class, $bookGenre);
-
+    public function new(Request $request): Response
+    {
+        $bookGenre = new BookGenre();
+        $form = $this->createForm(BookGenreType::class, $bookGenre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($bookGenre);
+            $entityManager->flush();
 
-            $bookGenre = $form->getData();
-            $this->addFlash("success", "Le nouveau genre a été ajouté");
-            $this->em->persist($bookGenre);
-            $this->em->flush();
-
-            return $this->redirectToRoute("book_genre");
+            return $this->redirectToRoute('book_genre_index');
         }
 
-        return $this->render("/book_genre/form.html.twig", ["bookGenreForm" => $form->createView(), "buttonLabel" => $buttonLabel]);
+        return $this->render('book_genre/new.html.twig', [
+            'book_genre' => $bookGenre,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
-     * @Route("/delete/{id}", name="genre_delete")
-     * @param EntityManagerInterface $em
-     * @param BookGenre $bookGenre
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/{id}", name="book_genre_show", methods={"GET"})
      */
-    public function deleteBookGenre(EntityManagerInterface $em, BookGenre $bookGenre) {
-        $em->remove($bookGenre);
-        $em->flush();
+    public function show(BookGenre $bookGenre): Response
+    {
+        return $this->render('book_genre/show.html.twig', [
+            'book_genre' => $bookGenre,
+        ]);
+    }
 
-        $this->addFlash("success", "Suppression OK");
+    /**
+     * @Route("/{id}/edit", name="book_genre_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, BookGenre $bookGenre): Response
+    {
+        $form = $this->createForm(BookGenreType::class, $bookGenre);
+        $form->handleRequest($request);
 
-        return $this->redirectToRoute("book_genre");
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('book_genre_index', [
+                'id' => $bookGenre->getId(),
+            ]);
+        }
+
+        return $this->render('book_genre/edit.html.twig', [
+            'book_genre' => $bookGenre,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="book_genre_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, BookGenre $bookGenre): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$bookGenre->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($bookGenre);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('book_genre_index');
     }
 }
