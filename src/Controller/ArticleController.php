@@ -7,6 +7,7 @@ use App\Form\ArticleFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -45,12 +46,19 @@ class ArticleController extends AbstractController
     }
 
     /**
-     * @Route("/new")
+     * @Route("/new", name ="article_new")
+     * @Route("/edit/{id}", name="article_edit")
+     * @param Request $request
+     * @param Article|null $article
+     * @return Response
      */
-    public function newArticleAction(Request $request)
+    public function addEditArticleAction(Request $request, Article $article = null)
     {
-        $form = $this->createForm(ArticleFormType::class);
+        if(!$article) {
+            $article = new Article();
+        }
 
+        $form = $this->createForm(ArticleFormType::class, $article);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
@@ -60,8 +68,6 @@ class ArticleController extends AbstractController
             return $this->redirectToRoute("article");
         }
 
-        dump($form->getData());
-
         return $this->render("/article/form.html.twig", [
             "articleForm" => $form->createView()
         ]);
@@ -70,7 +76,7 @@ class ArticleController extends AbstractController
     /**
      * @Route("/show/{id}", name="article_show", requirements={"id"="\d+"})
      * @param Article $article
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function showArticleAction(Article $article) {
         //Si on passe $id en paramètre mais symfony fais le lien automatiquement avec id par rapport à la clé primaire sur l'entité
