@@ -19,6 +19,17 @@ class AuthorRepository extends ServiceEntityRepository
         parent::__construct($registry, Author::class);
     }
 
+    public function getAuthorList() {
+        $qb = $this ->createQueryBuilder('author')
+            ->select("CONCAT_WS(' ', author.firstName, author.name) as authorFullName,
+                             COUNT(a) as numberOfArticle, author.id")
+            ->join('author.articles', 'a')
+            ->groupBy('author.id');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+    // SELECT COUNT(article.id) as nbArticle, author.name FROM article INNER JOIN author ON author.id = article.author_id GROUP BY author.id
+
     // /**
     //  * @return Author[] Returns an array of Author objects
     //  */

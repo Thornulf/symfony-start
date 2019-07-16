@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\HasLifecycleCallbacks()
@@ -51,6 +52,13 @@ class Article
      * @var ArrayCollection
      */
     private $tags;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=128, unique=true)
+     * @Gedmo\Slug(fields={"title"})
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -174,6 +182,24 @@ class Article
             $this->tags->removeElement($tag);
         }
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     * @return Article
+     */
+    public function setSlug(string $slug): Article
+    {
+        $this->slug = $slug;
         return $this;
     }
 

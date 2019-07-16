@@ -1,7 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ dump(article) }}
+
+    <h1>{{ article.title }}</h1>
+
+    <p>Paru le {{ article.createdAt| date('d/m/Y') }}</p>
+
+    <p>Crée par : {{ article.author.fullName }}</p>
+
+    <div>
+        {{ article.content }}
+    </div>
+
 {% endblock %}
 
 {% block title %}
