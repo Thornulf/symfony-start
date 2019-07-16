@@ -7,7 +7,9 @@ use App\Entity\Author;
 use App\Form\ArticleFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,7 +79,7 @@ class ArticleController extends AbstractController
      * @param Article|null $article
      * @return Response
      */
-    public function addEditArticleAction(Request $request, Article $article = null)
+    public function addEditArticleAction(Request $request,UploadableManager $uploadableManager, Article $article = null)
     {
         if(!$article) {
             $article = new Article();
@@ -88,6 +90,11 @@ class ArticleController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $article = $form->getData();
+
+            if($article->getUploadedFile() instanceof UploadedFile) {
+                $uploadableManager->markEntityToUpload($article, $article->getUploadedFile());
+            }
+
             $this->em->persist($article);
             $this->em->flush();
             return $this->redirectToRoute("article");

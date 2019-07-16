@@ -16,7 +16,13 @@
 
 {% endblock %}
 
-{% block title %}
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script>
+        ClassicEditor.create(document.getElementById("article_form_content"));
+    </script>
 
 {% endblock %}
 
