@@ -5,3 +5,9 @@
 #somme_index:
 #    path: /add/{number1}/{number2}
 #    controller: App\Controller\HomeController::addAction
+
+admin_login_check:
+  path: /admin/login_check
+
+admin_logout:
+  path: /admin/logout

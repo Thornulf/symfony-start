@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * Class HomeController
@@ -41,5 +42,17 @@ class HomeController extends AbstractController
     public function addAction($number1, $number2) {
         $result = $number1 + $number2;
         return $this->render("home/add.html.twig", ["n1"=>$number1,"n2"=>$number2, "result"=>$result]);
+    }
+
+    /**
+     * @Route("/login-admin", name="admin_login")
+     * @param AuthenticationUtils $security
+     * @return Response
+     */
+    public function adminLoginAction(AuthenticationUtils $security) {
+        return $this->render("home/login.html.twig", [
+            "userName" => $security->getLastUsername(),
+            "error" => $security->getLastAuthenticationError()
+        ]);
     }
 }
