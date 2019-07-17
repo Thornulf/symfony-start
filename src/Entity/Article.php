@@ -51,6 +51,12 @@ class Article
     private $author;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
+     */
+    private $comments;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Tag", inversedBy="articles", cascade={"persist"})
      * @var ArrayCollection
      */
@@ -79,6 +85,7 @@ class Article
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -252,6 +259,47 @@ class Article
     public function setUploadedFile(UploadedFile $uploadedFile): Article
     {
         $this->uploadedFile = $uploadedFile;
+        return $this;
+    }
+
+    /**
+     * @return Comment
+     */
+    public function getComments(): Comment
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param Comment $comments
+     * @return Article
+     */
+    public function setComments(Comment $comments): Article
+    {
+        $this->comments = $comments;
+        return $this;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getArticle() === $this) {
+                $comment->setArticle(null);
+            }
+        }
+
         return $this;
     }
 

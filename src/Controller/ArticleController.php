@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Article;
 use App\Entity\Author;
+use App\Entity\Comment;
 use App\Form\ArticleFormType;
+use App\Form\CommentFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager;
@@ -108,9 +110,10 @@ class ArticleController extends AbstractController
     /**
      * @Route("/show/{id}", name="article_show", requirements={"id"="\d+"})
      * @param Article $article
+     * @param Request $request
      * @return Response
      */
-    public function showArticleAction(Article $article) {
+    public function showArticleAction(Article $article, Request $request) {
         //Si on passe $id en paramètre mais symfony fais le lien automatiquement avec id par rapport à la clé primaire sur l'entité
         //$repo = $this->em->getRepository(Article::class);
         //$article = $repo->findOneBy(["id"=>$id]);
@@ -119,18 +122,45 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException("Pas d'article avec cet id");
         }
 
-        return $this->render("article/show.html.twig", ["article"=>$article]);
+        $repoComment = $this->em->getRepository(Comment::class);
+        $commentList = $repoComment->getCommentList();
+
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        return $this->render("article/show.html.twig", [
+            "article"=>$article,
+            "commentList" => $commentList,
+            "commentForm" => $form->createView()
+        ]);
     }
 
     /**
      * @Route("/show/{slug}", name="article_show_by_slug")
      * @ParamConverter("article", options={"mapping": {"slug": "slug"} })
+     * @param Article $article
+     * @param Request $request
+     * @return Response
      */
-    public function showArticleBySlugAction(Article $article) {
+    public function showArticleBySlugAction(Article $article, Request $request) {
         if(!$article) {
             throw $this->createNotFoundException("Pas d'article avec cet id");
         }
 
-        return $this->render("article/show.html.twig", ["article"=>$article]);
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        $repoComment = $this->em->getRepository(Comment::class);
+        $commentList = $repoComment->getCommentList();
+
+        return $this->render("article/show.html.twig", [
+            "article"=>$article,
+            "commentList" => $commentList,
+            "commentForm" => $form->createView()
+        ]);
     }
 }

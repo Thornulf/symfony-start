@@ -12,6 +12,31 @@
         {{ article.content | purify }}
     </div>
 
+    <div class="row justify-content-center">
+        <div class="col-md-7 p-3">
+            <h3>Commentaires</h3>
+
+            {{ dump(commentList) }}
+
+        </div>
+        <aside class="col-md-5 p-2">
+            <h3>Ajouter un commentaire</h3>
+
+            {{ form_start(commentForm) }}
+
+            {{ form_widget(commentForm) }}
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">
+                    Envoyer
+                </button>
+            </div>
+
+            {{ form_end(commentForm) }}
+
+        </aside>
+    </div>
+
 {% endblock %}
 
 {% block title %}
