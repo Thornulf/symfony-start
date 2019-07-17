@@ -112,8 +112,9 @@ class ArticleController extends AbstractController
      * @param Article $article
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
-    public function showArticleAction(Article $article, Request $request) {
+    public function showArticleAction(Article $article) {
         //Si on passe $id en paramètre mais symfony fais le lien automatiquement avec id par rapport à la clé primaire sur l'entité
         //$repo = $this->em->getRepository(Article::class);
         //$article = $repo->findOneBy(["id"=>$id]);
@@ -122,18 +123,8 @@ class ArticleController extends AbstractController
             throw $this->createNotFoundException("Pas d'article avec cet id");
         }
 
-        $repoComment = $this->em->getRepository(Comment::class);
-        $commentList = $repoComment->getCommentList();
-
-        $comment = new Comment();
-
-        $form = $this->createForm(CommentFormType::class, $comment);
-        $form->handleRequest($request);
-
         return $this->render("article/show.html.twig", [
-            "article"=>$article,
-            "commentList" => $commentList,
-            "commentForm" => $form->createView()
+            "article"=>$article
         ]);
     }
 
@@ -141,25 +132,22 @@ class ArticleController extends AbstractController
      * @Route("/show/{slug}", name="article_show_by_slug")
      * @ParamConverter("article", options={"mapping": {"slug": "slug"} })
      * @param Article $article
-     * @param Request $request
      * @return Response
+     * @throws \Exception
      */
-    public function showArticleBySlugAction(Article $article, Request $request) {
+    public function showArticleBySlugAction(Article $article) {
         if(!$article) {
             throw $this->createNotFoundException("Pas d'article avec cet id");
         }
 
         $comment = new Comment();
+        $comment->setArticle($article);
+        $comment->setCreatedAt(new \DateTime());
 
         $form = $this->createForm(CommentFormType::class, $comment);
-        $form->handleRequest($request);
-
-        $repoComment = $this->em->getRepository(Comment::class);
-        $commentList = $repoComment->getCommentList();
 
         return $this->render("article/show.html.twig", [
             "article"=>$article,
-            "commentList" => $commentList,
             "commentForm" => $form->createView()
         ]);
     }

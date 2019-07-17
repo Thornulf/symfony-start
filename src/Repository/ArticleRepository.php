@@ -21,7 +21,7 @@ class ArticleRepository extends ServiceEntityRepository
 
     public function getAllArticleByPage($articlePerPage = 20, $pageNumber = 1) {
         $qb = $this->createQueryBuilder('a')
-                ->select("a.id, a.title, a.createdAt, a.updatedAt, a.content, 
+                ->select("a.id, a.title, a.createdAt, a.updatedAt, a.content, a.slug, 
                                 CONCAT_WS(' ', author.firstName, author.name) as fullAuthorName,
                                 GROUP_CONCAT(t.tagName SEPARATOR ', ') as tagList")
                 ->join("a.author", 'author')
