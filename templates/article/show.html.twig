@@ -24,6 +24,16 @@
 
         <div class="col-md-8">
 
+            {% for comment in article.comments %}
+
+            <div class="mt-1">
+                <p>le {{ comment.createdAt | date('d/m/Y') }} par {{ comment.email }}</p>
+                <p>{{ comment.text }}</p>
+                <hr>
+            </div>
+
+            {% endfor %}
+
         </div>
 
         <div class="col-md-4">
