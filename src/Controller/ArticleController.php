@@ -135,7 +135,7 @@ class ArticleController extends AbstractController
      * @return Response
      * @throws \Exception
      */
-    public function showArticleBySlugAction(Article $article) {
+    public function showArticleBySlugAction(Article $article, Request $request) {
         if(!$article) {
             throw $this->createNotFoundException("Pas d'article avec cet id");
         }
@@ -145,6 +145,14 @@ class ArticleController extends AbstractController
         $comment->setCreatedAt(new \DateTime());
 
         $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $this->em->persist($comment);
+            $this->em->flush();
+
+            return $this->redirectToRoute("article_show_by_slug", ["slug" => $article->getSlug()]);
+        }
 
         return $this->render("article/show.html.twig", [
             "article"=>$article,
