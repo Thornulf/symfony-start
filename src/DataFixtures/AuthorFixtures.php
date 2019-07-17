@@ -27,7 +27,9 @@ class AuthorFixtures extends Fixture
         $author->setName("Hugo")
             ->setFirstName("Victor")
             ->setGender("M")
-            ->setBirthDate(new \DateTime("now -150 years"));
+            ->setBirthDate(new \DateTime("now -150 years"))
+            ->setEmail("v.hugo@miserable.com")
+            ->setPlainPassword("123");
         $manager->persist($author);
         $this->addReference("author_0", $author);
 
@@ -37,7 +39,9 @@ class AuthorFixtures extends Fixture
             $author->setName($faker->lastName)
                 ->setFirstName($faker->firstName($gender))
                 ->setGender(substr($gender,0,1))
-                ->setBirthDate($faker->dateTimeThisCentury());
+                ->setBirthDate($faker->dateTimeThisCentury())
+                ->setEmail($faker->email)
+                ->setPlainPassword("123");
             $manager->persist($author);
 
             $this->addReference("author_$i", $author);
