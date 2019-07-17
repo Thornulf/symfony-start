@@ -28,6 +28,9 @@ class CommentFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Comment::class,
+            'csrf_protection' => true,
+            'csrf_token_id' => 'vrai protection',
+            'csrf_field_name' => 'comment_token'
         ]);
     }
 }

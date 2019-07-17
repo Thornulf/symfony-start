@@ -4,8 +4,8 @@
 
     <h1>{{ article.title }}</h1>
 
-    {% if article.image is defined %}
-        <img src="img/photos/{{ article.image }}" class="img-fluid">
+    {% if article.image is not empty %}
+        <img src="/img/photos/{{ article.image }}" class="img-fluid">
     {% endif %}
 
     <p>Paru le {{ article.createdAt| date('d/m/Y') }}</p>
@@ -18,38 +18,29 @@
 
     <hr>
 
+    <h3>Commentaires</h3>
+
     <div class="row">
 
-        <h3>Commentaires</h3>
-
         <div class="col-md-8">
-
             {% for comment in article.comments %}
-
             <div class="mt-1">
-                <p>le {{ comment.createdAt | date('d/m/Y') }} par {{ comment.email }}</p>
+                <p>le {{ comment.createdAt | date('d/m/Y') }} par {{ comment.mail }}</p>
                 <p>{{ comment.text }}</p>
                 <hr>
             </div>
-
             {% endfor %}
-
         </div>
 
         <div class="col-md-4">
-
             {{ form_start(commentForm) }}
-
             {{ form_widget(commentForm) }}
-
             <div>
                 <button type="submit" class="btn btn-dark">
                     Envoyer
                 </button>
             </div>
-
             {{ form_end(commentForm) }}
-
         </div>
     </div>
 

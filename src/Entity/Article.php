@@ -263,18 +263,18 @@ class Article
     }
 
     /**
-     * @return Comment
+     * @return ArrayCollection
      */
-    public function getComments(): Comment
+    public function getComments()
     {
         return $this->comments;
     }
 
     /**
-     * @param Comment $comments
+     * @param ArrayCollection $comments
      * @return Article
      */
-    public function setComments(Comment $comments): Article
+    public function setComments(ArrayCollection $comments): Article
     {
         $this->comments = $comments;
         return $this;
